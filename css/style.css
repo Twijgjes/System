@@ -1,0 +1,10 @@
+.infoDiv {
+  width: 200px;
+  height: 100px;
+  background-color: grey;
+  opacity: 0.5;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  color: black;
+}
