@@ -2,7 +2,7 @@ SYS.VectorLine = function( origin )
 {
   this.origin = new SYS.Vector2( origin.x, origin.y );
   this.destination = new SYS.Vector2( origin.x + 1, origin.y );
-  this.color = ' #FF0000' ;
+  this.color = ' #858585' ;
   this.lineWidth = 5;
 };
 
@@ -17,6 +17,7 @@ SYS.VectorLine.prototype = {
     SYS.context.lineTo( this.destination.x, this.destination.y );
     SYS.context.lineWidth = this.lineWidth;
     SYS.context.strokeStyle = this.color;
+    SYS.context.lineCap = 'round';
     SYS.context.stroke(  );
     SYS.context.lineWidth = 0;
   },

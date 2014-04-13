@@ -45,166 +45,182 @@ SYS.PhysicsBody.prototype = {
       if ( SYS.physicsObjects[n].position.distanceTo( this.position ) < SYS.physicsObjects[n].mass && this.id != SYS.physicsObjects[n].id )
       {
         // Check if two objects collide with eachother
-        this.checkCollision( SYS.physicsObjects[n] );
+        this.interact( SYS.physicsObjects[n] );
       }
     }
     
-    // Keep the object within the bounds
-    /*
-    this.keepInBounds();
-    */
-    
     // Add the calculated velocity ( from interaction with the other objects ) to the position
-    this.position.add( this.velocity );
+    var speedAdjust = new SYS.Vector2( this.velocity.x * SYS.speed, this.velocity.y * SYS.speed );
+    this.position.add( speedAdjust );
   },
   
-  checkCollision: function( checkAgainst )
+  interact: function( checkAgainst )
   {
     if ( this.position.distanceTo( checkAgainst.position ) < this.radius + checkAgainst.radius )
     {
-      // Check the magnitude of relative velocity
-      var va = new SYS.Vector2( this.velocity.x, this.velocity.y ),
-          vb = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
-      va.negate();
-      vb.add( va );
-      
-      if ( vb.magnitude() > 10 && checkAgainst.type != 2 )
-      {
-        console.log( "fragmenting!" );
-        // The bigger object will now fragment
-        
-        SYS.context.beginPath();
-        SYS.context.arc( Math.round( this.position.x ), Math.round( this.position.y ), this.radius * 4, 0, 2 * Math.PI, false );
-        SYS.context.fillStyle = '#FF0000';
-        SYS.context.fill();
-        
-        if ( this.mass > checkAgainst.mass )
-        {
-          // Take mass from the bigger object
-          this.mass -= checkAgainst.mass;
-          
-          // Make variables for the new object
-          var position = new SYS.Vector2( checkAgainst.position.x, checkAgainst.position.y ),
-              velocity = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y ),
-              velocityOffset = new SYS.Vector2( this.velocity.x, this.velocity.y );
-          
-          // Alter the fragment's velocity a bit
-          velocityOffset.normalize();
-          velocity.add( velocityOffset );
-          
-          // Make the new object                
-          var fragment = new SYS.PhysicsBody
-                             ( 
-                               checkAgainst.mass, 
-                               this.density, 
-                               position, 
-                               velocity 
-                             );
-                         
-          // Calculate the position offset
-          /*var positionOffset = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
-          positionOffset.multiplyScalar( velocity.magnitude() / ( this.radius * 2.5 ) );*/
-          
-          // This will probably go wrong. Basing the rotation off a velocity isn't fool-proof. Methinks.
-          // Place the resulting fragment outside the impacted body, 90 degrees from the impact point.
-          var velocityNormal =  new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
-          velocityNormal.normalize();
-          var rotation = Math.atan2( velocityNormal.y, velocityNormal.x );
-          rotation += Math.PI / 2;
-          var radius = fragment.radius + ( this.radius * 2 );
-          fragment.position.placeAround( rotation, this.position, radius );
-          
-          rotation += Math.PI / 12;
-          radius += checkAgainst.radius;
-          checkAgainst.position.placeAround( rotation, this.position, radius );
-        }
-        else
-        {
-          // Take mass from the bigger object
-          checkAgainst.mass -= this.mass;
-          
-          // Make variables for the new object
-          var position = new SYS.Vector2( this.position.x,this.position.y ),
-              velocity = new SYS.Vector2( this.velocity.x, this.velocity.y ),
-              velocityOffset = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
-          
-          // Alter the fragment's velocity a bit
-          velocityOffset.normalize();
-          velocity.add( velocityOffset );
-          
-          // Make the new object            
-          var fragment = new SYS.PhysicsBody
-                         ( 
-                           this.mass, 
-                           checkAgainst.density, 
-                           position, 
-                           velocity 
-                         );
-          
-          // Calculate the position offset
-          /*var positionOffset = new SYS.Vector2( this.velocity.x, this.velocity.y );
-          positionOffset.multiplyScalar( velocity.magnitude() / ( checkAgainst.radius * 2.5 ) );*/
-          
-          // Offset the position
-          var velocityNormal =  new SYS.Vector2( this.velocity.x, this.velocity.y );
-          velocityNormal.normalize();
-          var rotation = Math.atan2( velocityNormal.y, velocityNormal.x );
-          rotation += Math.PI / 2;
-          var radius = fragment.radius + ( checkAgainst.radius * 2 );
-          fragment.position.placeAround( rotation, checkAgainst.position, radius );
-          
-          rotation += Math.PI / 12;
-          radius += this.radius;
-          this.position.placeAround( rotation, checkAgainst.position, radius );
-        }
-      }
-      else if ( checkAgainst.type != 2 )
-      {
-        // Check which object is bigger. The bigger one absorbs the smaller one.
-        if ( this.mass > checkAgainst.mass ) 
-        {
-          // this object absorbs the other
-          this.mass += checkAgainst.mass;
-          //this.density += ( checkAgainst.mass * 0.01 );
-          this.radius = Math.pow( ( 3*this.mass )/(4 * Math.PI ), 1/3 );
-          
-          var velocityModifier = checkAgainst.mass / this.mass;
-          checkAgainst.velocity.sub( this.velocity );
-          checkAgainst.velocity.multiplyScalar( velocityModifier );
-          this.velocity.add( checkAgainst.velocity );
-          
-          checkAgainst.destroy();
-        }
-        // When the masses are equal it doesn't really matter which one absorbs the other
-        else
-        {
-          // The other object absorbs this one
-          checkAgainst.mass += this.mass;
-          //checkAgainst.density += ( this.mass * 0.01 );
-          //checkAgainst.radius = ( checkAgainst.mass / checkAgainst.density ) / ( Math.PI * 4 );
-          Math.pow( ( 3*checkAgainst.mass )/(4 * Math.PI ), 1/3 );
-          
-          var velocityModifier = this.mass / checkAgainst.mass;
-          this.velocity.sub( checkAgainst.velocity );
-          this.velocity.multiplyScalar( velocityModifier );
-          checkAgainst.velocity.add( this.velocity );
-          
-          this.destroy();
-        }
-      }
+      this.collide( checkAgainst );
     }
     // If there's no intersection the other object attracts this object with its gravity ( changes its velocity )
     else
     {
-      var acceleration;
-      acceleration = SYS.Math.getNormalBetweenVectors( this.position, checkAgainst.position );
-      if ( acceleration.x != 0 && acceleration.y != 0 ) acceleration.multiplyScalar( ( checkAgainst.mass / checkAgainst.position.distanceTo( this.position ) ) / SYS.speed );
-      this.velocity.add( acceleration );
+      this.accelerate( checkAgainst );
     }
   },
   
-  keepInBounds: function()
+  collide: function( checkAgainst ) 
   {
+    // Check the magnitude of relative velocity
+    var va = new SYS.Vector2( this.velocity.x, this.velocity.y ),
+        vb = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
+    vb.sub( va );
+    
+    if ( vb.magnitude() > 300 && checkAgainst.type != 2 )
+    {
+      console.log(vb.magnitude() );
+      this.fragment( checkAgainst );
+    }
+    else if ( checkAgainst.type != 2 )
+    {
+      this.fuse( checkAgainst );
+    }
+  },
+  
+  accelerate: function( checkAgainst ) 
+  {
+    var acceleration = SYS.Math.getNormalBetweenVectors( this.position, checkAgainst.position );
+    acceleration.multiplyScalar( checkAgainst.mass / checkAgainst.position.distanceTo( this.position ) );
+    acceleration.multiplyScalar( SYS.speed );
+    this.velocity.add( acceleration );
+  },
+  
+  fragment: function( checkAgainst ) {
+    if(SYS.debug) console.log( "fragmenting!");
+    // The bigger object will now fragment
+    if ( this.mass > checkAgainst.mass )
+    {
+      // Draw a red circle around the victim
+      SYS.context.beginPath();
+      SYS.context.arc( Math.round( this.position.x ), Math.round( this.position.y ), this.radius * 4, 0, 2 * Math.PI, false );
+      SYS.context.fillStyle = '#FF0000';
+      SYS.context.fill();
+      
+      // Take mass from the bigger object
+      this.mass -= checkAgainst.mass;
+      
+      // Make variables for the new object
+      var position = new SYS.Vector2( checkAgainst.position.x, checkAgainst.position.y ),
+          velocity = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y ),
+          velocityOffset = new SYS.Vector2( this.velocity.x, this.velocity.y );
+      
+      // Alter the fragment's velocity a bit
+      velocityOffset.normalize();
+      velocity.add( velocityOffset );
+      
+      // Make the new object                
+      var fragment = new SYS.PhysicsBody
+                         ( 
+                           checkAgainst.mass, 
+                           this.density, 
+                           position, 
+                           velocity 
+                         );
+                     
+      // Calculate the position offset
+      /*var positionOffset = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
+      positionOffset.multiplyScalar( velocity.magnitude() / ( this.radius * 2.5 ) );*/
+      
+      // This will probably go wrong. Basing the rotation off a velocity isn't fool-proof. Methinks.
+      // Place the resulting fragment outside the impacted body, 90 degrees from the impact point.
+      var velocityNormal =  new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
+      velocityNormal.normalize();
+      var rotation = Math.atan2( velocityNormal.y, velocityNormal.x );
+      rotation += Math.PI / 2;
+      var radius = fragment.radius + ( this.radius * 2 );
+      fragment.position.placeAround( rotation, this.position, radius );
+      
+      rotation += Math.PI / 12;
+      radius += checkAgainst.radius;
+      checkAgainst.position.placeAround( rotation, this.position, radius );
+    }
+    else
+    {
+      // Draw a red circle around the victim
+      SYS.context.beginPath();
+      SYS.context.arc( Math.round( checkAgainst.position.x ), Math.round( checkAgainst.position.y ), checkAgainst.radius * 4, 0, 2 * Math.PI, false );
+      SYS.context.fillStyle = '#FF0000';
+      SYS.context.fill();
+      
+      // Take mass from the bigger object
+      checkAgainst.mass -= this.mass;
+      
+      // Make variables for the new object
+      var position = new SYS.Vector2( this.position.x,this.position.y ),
+          velocity = new SYS.Vector2( this.velocity.x, this.velocity.y ),
+          velocityOffset = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
+      
+      // Alter the fragment's velocity a bit
+      velocityOffset.normalize();
+      velocity.add( velocityOffset );
+      
+      // Make the new object            
+      var fragment = new SYS.PhysicsBody ( 
+                       this.mass, 
+                       checkAgainst.density, 
+                       position, 
+                       velocity 
+                     );
+      
+      // Calculate the position offset
+      /*var positionOffset = new SYS.Vector2( this.velocity.x, this.velocity.y );
+      positionOffset.multiplyScalar( velocity.magnitude() / ( checkAgainst.radius * 2.5 ) );*/
+      
+      // Offset the position
+      var velocityNormal =  new SYS.Vector2( this.velocity.x, this.velocity.y );
+      velocityNormal.normalize();
+      var rotation = Math.atan2( velocityNormal.y, velocityNormal.x );
+      rotation += Math.PI / 2;
+      var radius = fragment.radius + ( checkAgainst.radius * 2 );
+      fragment.position.placeAround( rotation, checkAgainst.position, radius );
+      
+      rotation += Math.PI / 12;
+      radius += this.radius;
+      this.position.placeAround( rotation, checkAgainst.position, radius );
+    }
+  },
+  
+  fuse: function( checkAgainst ) {
+    if(SYS.debug) console.log('fusing!');
+    // Check which object is bigger. The bigger one absorbs the smaller one.
+    if ( this.mass > checkAgainst.mass ) 
+    {
+      // this object absorbs the other
+      this.mass += checkAgainst.mass;
+      this.radius = Math.pow( ( 3*this.mass )/(4 * Math.PI ), 1/3 );
+      
+      var velocityModifier = checkAgainst.mass / this.mass;
+      checkAgainst.velocity.sub( this.velocity );
+      checkAgainst.velocity.multiplyScalar( velocityModifier );
+      this.velocity.add( checkAgainst.velocity );
+      
+      checkAgainst.destroy();
+    }
+    // When the masses are equal it doesn't really matter which one absorbs the other
+    else
+    {
+      // The other object absorbs this one
+      checkAgainst.mass += this.mass;
+      checkAgainst.radius = Math.pow( ( 3*checkAgainst.mass )/(4 * Math.PI ), 1/3 );
+      
+      var velocityModifier = this.mass / checkAgainst.mass;
+      this.velocity.sub( checkAgainst.velocity );
+      this.velocity.multiplyScalar( velocityModifier );
+      checkAgainst.velocity.add( this.velocity );
+      
+      this.destroy();
+    }
+  },
+  
+  keepInBounds: function() {
     if ( this.position.x > SYS.WIDTH ) 
     {
       this.position.x = SYS.WIDTH; 
@@ -228,8 +244,7 @@ SYS.PhysicsBody.prototype = {
     }
   },
   
-  destroy: function()
-  {
+  destroy: function() {
     var indexD = SYS.drawables.indexOf( this );
     SYS.drawables.splice( indexD, 1 );
     var indexP = SYS.physicsObjects.indexOf( this );
@@ -249,6 +264,7 @@ SYS.StationaryPhysicsBody = function(mass, density, position, velocity)
   this.color = '#FFD452';
   this.id = SYS.idCounter++;
   this.type = 2; // 2 for sun
+  this.circleRadians = 2 * Math.PI;
   
   if ( this.mass != 0 ) SYS.physicsObjects.push( this );
   if ( this.radius != 0 ) SYS.drawables.push( this );
@@ -260,8 +276,25 @@ SYS.StationaryPhysicsBody.prototype = {
   
   draw: function()
   {
+    var glowRadius = this.radius * 20;
+    var roundedX = Math.round( this.position.x );
+    var roundedY = Math.round( this.position.y );
     SYS.context.beginPath();
-    SYS.context.arc( Math.round( this.position.x ), Math.round( this.position.y ), this.radius, 0, 2 * Math.PI, false );
+    SYS.context.arc( roundedX, roundedY, glowRadius, 0, this.circleRadians, false );
+    // create radial gradient
+    var grd = SYS.context.createRadialGradient(roundedX, roundedY, 1, Math.round( this.position.x ), Math.round( this.position.y ),  glowRadius);
+    // light blue
+    grd.addColorStop(0, this.color );
+    grd.addColorStop(0.05, '#DBB748' );
+    grd.addColorStop(0.08, '#4D401C' );
+    // dark blue
+    grd.addColorStop(1, '#000000');
+
+    SYS.context.fillStyle = grd;
+    SYS.context.fill();
+    
+    SYS.context.beginPath();
+    SYS.context.arc( roundedX, roundedY, this.radius, 0, this.circleRadians, false );
     SYS.context.fillStyle = this.color;
     SYS.context.fill();
   },

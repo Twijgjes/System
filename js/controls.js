@@ -32,7 +32,7 @@ SYS.Controls.prototype = {
     var position = new SYS.Vector2( this.mouse.x, this.mouse.y );
     var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
     velocity.sub( position );
-    velocity.multiplyScalar( 0.01 );
+    velocity.multiplyScalar( 0.5 );
     
     new SYS.PhysicsBody( 100, 4, position, velocity );
     SYS.vectorLine = null;
@@ -58,8 +58,8 @@ SYS.Controls.prototype = {
               break;
           case 38:
               // Key up.
-              if ( SYS.speed > 25 ) 
-                SYS.speed -= 25;
+              if ( SYS.speed < 1 ) 
+                SYS.speed += 0.005;
               console.log(SYS.speed);
               break;
           case 39:
@@ -67,11 +67,12 @@ SYS.Controls.prototype = {
               break;
           case 40:
               // Key down.
-              SYS.speed += 25;
+              if( SYS.speed > 0.005 )
+                SYS.speed -= 0.005;
               console.log(SYS.speed);
               break;
      }
-     event.preventDefault();
+     //event.preventDefault();
   }
   
 };
