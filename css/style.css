@@ -1,10 +1,63 @@
+@font-face {
+    font-family: 'exo-regular';
+    src: url('../fonts/Exo-Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'laconic-regular';
+    src: url('../fonts/Laconic_Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+  overflow: hidden;
+}
+
 .infoDiv {
-  width: 200px;
-  height: 100px;
-  background-color: grey;
-  opacity: 0.5;
   position: absolute;
-  left: 0px;
-  top: 0px;
-  color: black;
+  background-color: black;
+  font-family: 'laconic-regular';
+  color: white;
+  opacity: .5;
+  top: 1rem;
+  left: 1rem;
+  width: 20rem;
+  height: 6rem;
+  padding: 15px;
+  box-shadow: inset 0 0 20px rgba(255,255,255,.5);
+}
+
+.dialog {
+  position: absolute;
+  background-color: black;
+  font-family: 'laconic-regular';
+  color: white;
+  opacity: .5;
+  bottom: 1rem;
+  left: 1rem;
+  width: 15rem;
+  height: 7rem;
+  padding: 15px;
+  box-shadow: inset 0 0 20px rgba(255,255,255,.5);
+}
+
+.button {
+  position: relative;
+  background-color: black;
+  font-family: 'laconic-regular';
+  color: white;
+  opacity: .5;
+  padding: 10px;
+  box-shadow: inset 0 0 20px rgba(255,255,255,.5);
+}
+
+.button:hover {
+  border: 1px solid #666;
+}
+
+.button:active {
+  border: 2px solid #666;
 }

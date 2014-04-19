@@ -25,7 +25,7 @@ SYS.VectorLine.prototype = {
   setDestination: function( newPosX, newPosY )
   {
     this.destination.set( new SYS.Vector2( newPosX, newPosY ) );
-  },
+  }
   
 };
 

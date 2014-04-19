@@ -23,7 +23,7 @@ SYS.GUI.Info.prototype =
     updateInfo: function( speed, objects )
     {
         this.infoDiv.innerHTML = 'simulation speed: ' + speed + '<br>' + 'objects: ' + objects;
-    },
+    }
     
 };
 

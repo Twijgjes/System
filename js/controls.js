@@ -6,15 +6,21 @@ SYS.Controls = function( )
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
   window.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
+  window.addEventListener( 'touchstart', this.onMouseDown.bind( this ), false );
   window.addEventListener( 'mouseup', this.onMouseUp.bind( this ), false );
+  window.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
   window.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
+  window.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
   window.addEventListener('keydown' , this.onKeyDown.bind( this ), false );
 };
 
 SYS.Controls.prototype = {
   
-  onMouseDown: function( event )
+  onMouseDown: function( e )
   {
+    e.preventDefault();
+    var event = e.touches ? e.touches[0] : e;
+
     this.mouse.x = event.clientX;
     this.mouse.y = event.clientY;
     
@@ -22,10 +28,13 @@ SYS.Controls.prototype = {
     SYS.vectorLine = new SYS.VectorLine( this.mouse );
   },
   
-  onMouseUp: function( event )
+  onMouseUp: function( e )
   {
-	this.mouseDelta.x = event.clientX;
-	this.mouseDelta.y = event.clientY;
+    e.preventDefault();
+    var event = e.touches ? e.touches[0] : e;
+
+    this.mouseDelta.x = event.clientX;
+	  this.mouseDelta.y = event.clientY;
     
     this.mouseDown = false;
     
@@ -38,11 +47,13 @@ SYS.Controls.prototype = {
     SYS.vectorLine = null;
   },
   
-  onMouseMove: function( event )
+  onMouseMove: function( e )
   {
+    e.preventDefault();
     if (this.mouseDown)
     {
-       SYS.vectorLine.setDestination( event.clientX, event.clientY );
+      var event = e.touches ? e.touches[0] : e;
+      SYS.vectorLine.setDestination( event.clientX, event.clientY );
        //console.log("x: ",event.clientX," y: ",event.clientY);
     }
   },
