@@ -1,11 +1,9 @@
-SYS.Math = function( )
+/* SYS.Math = function( )
 {
   
-};
+}; */
 
-SYS.Math.prototype = {
-  
-  constructor: SYS.Math,
+SYS.Math = {
   
   getNormalBetweenVectors: function ( from, to )
   {
@@ -26,12 +24,6 @@ SYS.Vector2 = function( x, y )
 {
   this.x = x;
   this.y = y;
-  
-  /* if( x != null && y != null )
-  {
-    this.x = x; 
-    this.y = y;
-  } */
 };
 
 SYS.Vector2.prototype = {
@@ -59,6 +51,7 @@ SYS.Vector2.prototype = {
   dot: function( v )
   {
     // Whups, nuffin yet
+    console.log( 'HEY! You still have to write this function.' );
   },
   
   normalize: function( )

@@ -1,5 +1,6 @@
-SYS.VectorLine = function( origin )
+SYS.VectorLine = function( gameObject, origin )
 {
+  this.game = gameObject;
   this.origin = new SYS.Vector2( origin.x, origin.y );
   this.destination = new SYS.Vector2( origin.x + 1, origin.y );
   this.color = ' #858585' ;
@@ -8,18 +9,16 @@ SYS.VectorLine = function( origin )
 
 SYS.VectorLine.prototype = {
   
-  constuctor: SYS.VectorLine,
-  
-  draw: function(  )
+  draw: function( canvas, context )
   {
-    SYS.context.beginPath(  );
-    SYS.context.moveTo( this.origin.x, this.origin.y );
-    SYS.context.lineTo( this.destination.x, this.destination.y );
-    SYS.context.lineWidth = this.lineWidth;
-    SYS.context.strokeStyle = this.color;
-    SYS.context.lineCap = 'round';
-    SYS.context.stroke(  );
-    SYS.context.lineWidth = 0;
+    context.beginPath(  );
+    context.moveTo( this.origin.x, this.origin.y );
+    context.lineTo( this.destination.x, this.destination.y );
+    context.lineWidth = this.lineWidth;
+    context.strokeStyle = this.color;
+    context.lineCap = 'round';
+    context.stroke(  );
+    context.lineWidth = 0;
   },
   
   setDestination: function( newPosX, newPosY )

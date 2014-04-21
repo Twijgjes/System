@@ -1,7 +1,8 @@
 // Controls
 
-SYS.Controls = function( )
+SYS.Controls = function( gameObject )
 {
+  this.game = gameObject;
   this.mouse = new SYS.Vector2( 0, 0 );
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
@@ -11,7 +12,7 @@ SYS.Controls = function( )
   window.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
   window.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
   window.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
-  window.addEventListener('keydown' , this.onKeyDown.bind( this ), false );
+  window.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
 };
 
 SYS.Controls.prototype = {
@@ -25,7 +26,7 @@ SYS.Controls.prototype = {
     this.mouse.y = event.clientY;
     
     this.mouseDown = true;
-    SYS.vectorLine = new SYS.VectorLine( this.mouse );
+    this.game.vectorLine = new SYS.VectorLine( this.game, this.mouse );
   },
   
   onMouseUp: function( e )
@@ -34,17 +35,18 @@ SYS.Controls.prototype = {
     var event = e.touches ? e.touches[0] : e;
 
     this.mouseDelta.x = event.clientX;
-	  this.mouseDelta.y = event.clientY;
+	this.mouseDelta.y = event.clientY;
     
     this.mouseDown = false;
     
     var position = new SYS.Vector2( this.mouse.x, this.mouse.y );
     var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
     velocity.sub( position );
-    velocity.multiplyScalar( 0.5 );
+//    velocity.multiplyScalar( 0.7 );
+    velocity.negate();
     
-    new SYS.PhysicsBody( 100, 4, position, velocity );
-    SYS.vectorLine = null;
+    new SYS.PhysicsBody( this.game, 100, 4, position, velocity );
+    this.game.vectorLine = null;
   },
   
   onMouseMove: function( e )
@@ -53,7 +55,7 @@ SYS.Controls.prototype = {
     if (this.mouseDown)
     {
       var event = e.touches ? e.touches[0] : e;
-      SYS.vectorLine.setDestination( event.clientX, event.clientY );
+      this.game.vectorLine.setDestination( event.clientX, event.clientY );
        //console.log("x: ",event.clientX," y: ",event.clientY);
     }
   },
@@ -69,18 +71,18 @@ SYS.Controls.prototype = {
               break;
           case 38:
               // Key up.
-              if ( SYS.speed < 1 ) 
-                SYS.speed += 0.005;
-              console.log(SYS.speed);
+              if ( this.game.settings.speed < 1 ) 
+                this.game.settings.speed += 0.005;
+              console.log(this.game.settings.speed);
               break;
           case 39:
               // Key right.
               break;
           case 40:
               // Key down.
-              if( SYS.speed > 0.005 )
-                SYS.speed -= 0.005;
-              console.log(SYS.speed);
+              if( this.game.settings.speed > 0.005 )
+                this.game.settings.speed -= 0.005;
+              console.log(this.game.settings.speed);
               break;
      }
      //event.preventDefault();

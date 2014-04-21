@@ -1,6 +1,12 @@
-SYS = function( )
+var SYS = SYS || {
+  
+  // Info over System
+  VERSION: '0.2.0',
+};
+
+/* SYS = function( )
 {
-  this.version = '0.1';
+  this.version = '0.2';
   this.canvas = document.getElementById('canvas');
   this.context = this.canvas.getContext('2d');
   this.WIDTH = this.canvas.width = window.innerWidth;
@@ -45,6 +51,7 @@ SYS.prototype = {
     this.infoObject = new SYS.GUIInfo();
     //this.makeRandomObjects();
     new SYS.StationaryPhysicsBody( 50000, 40, new SYS.Vector2( this.WIDTH / 2, this.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
+    new SYS.GUI.Notification( 300, 10, 500, 200, 'Hey there! <br> The big yellow blob there is a star. Throw asteriods into its orbit by clicking, dragging and then releasing the left mouse button!' );
     this.update( );
     
   },
@@ -126,4 +133,4 @@ SYS.prototype = {
     }
   },
   
-};
+}; */
