@@ -63,11 +63,15 @@ SYS.PhysicsBody.prototype = {
     else
     {
       this.accelerate( checkAgainst, speed );
+//      if(checkAgainst.type != 2) checkAgainst.accelerate( this, speed );
     }
   },
   
   collide: function( checkAgainst ) 
   {
+    if( checkAgainst.type == 2 )
+        this.destroy();
+    
     // Check the magnitude of relative velocity
     var va = new SYS.Vector2( this.velocity.x, this.velocity.y ),
         vb = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
@@ -299,74 +303,18 @@ SYS.StationaryPhysicsBody.prototype = {
     context.fill();
   },
   
-  simulate: function()
+  simulate: function( speed )
   {
-    for ( var n in this.game.physicsObjects )
-    {
+    for ( var n in this.game.physicsObjects ) {
       // WHOA, prevent simulating against self!
-      if ( this.game.physicsObjects[n].position.distanceTo( this.position ) < this.game.physicsObjects[n].mass && this.id != this.game.physicsObjects[n].id )
-      {
-        if ( this.position.distanceTo( this.game.physicsObjects[n].position ) < this.radius + this.game.physicsObjects[n].radius )
-        {
-          if ( this.mass > this.game.physicsObjects[n].mass ) 
-          {
-            //this.mass += this.game.physicsObjects[n].mass;
-            //this.density += ( this.game.physicsObjects[n].mass * 0.005 );
-            //this.radius = ( this.mass / this.density ) / Math.PI;
-            this.game.physicsObjects[n].velocity.multiplyScalar( this.game.physicsObjects[n].mass / 400 )
-            this.velocity.add( this.game.physicsObjects[n].velocity );
-            this.game.physicsObjects[n].destroy();
-          }
-          else
-          {
-            /*
-            this.game.physicsObjects[n].mass += this.mass;
-            this.game.physicsObjects[n].density += ( this.mass * 0.005 );
-            this.game.physicsObjects[n].radius = ( this.game.physicsObjects[n].mass / this.game.physicsObjects[n].density ) / Math.PI;
-            this.velocity.multiplyScalar( this.mass / 400 )
-            this.game.physicsObjects[n].velocity.add( this.velocity );
-            this.destroy();
-            */
-          }
+      if ( this.game.physicsObjects[n].position.distanceTo( this.position ) < this.game.physicsObjects[n].mass && this.id != this.game.physicsObjects[n].id ) {
+        if ( this.position.distanceTo( this.game.physicsObjects[n].position ) < this.radius + this.game.physicsObjects[n].radius ) {
+          this.game.physicsObjects[n].destroy();
+          return;
         }
-        else
-        {
-          /*
-          var acceleration;
-          acceleration = this.game.Math.getNormalBetweenVectors( this.position, this.game.physicsObjects[n].position );
-          if ( acceleration.x != 0 && acceleration.y != 0 ) acceleration.multiplyScalar( ( this.game.physicsObjects[n].mass / this.game.physicsObjects[n].position.distanceTo( this.position) ) / 200 );
-          this.velocity.add( acceleration );
-          */
-        }
+//        this.game.physicsObjects[n].accelerate( this, speed );
       }
     }
-    
-    // Keep the object within the bounds
-    /*
-    if ( this.position.x > this.game.WIDTH ) 
-    {
-      this.position.x = this.game.WIDTH; 
-      this.velocity.negate();
-    }
-    else if ( this.position.x < 0 )
-    {
-      this.position.x = 0; 
-      this.velocity.negate();
-    }
-    
-    if ( this.position.y > this.game.HEIGHT ) 
-    {
-      this.position.y = this.game.HEIGHT; 
-      this.velocity.negate();
-    }
-    else if ( this.position.y < 0 )
-    {
-      this.position.y = 0; 
-      this.velocity.negate();
-    }
-    */
-    
-    /*this.position.add( this.velocity );*/
   },
   
   destroy: function()

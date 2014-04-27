@@ -3,7 +3,7 @@
 SYS.Controls = function( gameObject )
 {
   this.game = gameObject;
-  this.mouse = new SYS.Vector2( 0, 0 );
+  this.mouseStart = new SYS.Vector2( 0, 0 );
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
   window.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
@@ -22,24 +22,25 @@ SYS.Controls.prototype = {
     e.preventDefault();
     var event = e.touches ? e.touches[0] : e;
 
-    this.mouse.x = event.clientX;
-    this.mouse.y = event.clientY;
+    this.mouseStart.x = event.clientX;
+    this.mouseStart.y = event.clientY;
     
     this.mouseDown = true;
-    this.game.vectorLine = new SYS.VectorLine( this.game, this.mouse );
+    this.game.vectorLine = new SYS.VectorLine( this.game, this.mouseStart );
   },
   
   onMouseUp: function( e )
   {
     e.preventDefault();
-    var event = e.touches ? e.touches[0] : e;
+    console.log('mouse released');
+    var event = e.changedTouches ? e.changedTouches[0] : e;
 
     this.mouseDelta.x = event.clientX;
 	this.mouseDelta.y = event.clientY;
     
     this.mouseDown = false;
     
-    var position = new SYS.Vector2( this.mouse.x, this.mouse.y );
+    var position = new SYS.Vector2( this.mouseStart.x, this.mouseStart.y );
     var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
     velocity.sub( position );
 //    velocity.multiplyScalar( 0.7 );
@@ -55,6 +56,8 @@ SYS.Controls.prototype = {
     if (this.mouseDown)
     {
       var event = e.touches ? e.touches[0] : e;
+//      this.mouseDelta.x = event.clientX;
+//      this.mouseDelta.y = event.clientY;
       this.game.vectorLine.setDestination( event.clientX, event.clientY );
        //console.log("x: ",event.clientX," y: ",event.clientY);
     }
@@ -72,7 +75,7 @@ SYS.Controls.prototype = {
           case 38:
               // Key up.
               if ( this.game.settings.speed < 1 ) 
-                this.game.settings.speed += 0.005;
+                this.game.settings.speed += 0.0001;
               console.log(this.game.settings.speed);
               break;
           case 39:
@@ -80,8 +83,8 @@ SYS.Controls.prototype = {
               break;
           case 40:
               // Key down.
-              if( this.game.settings.speed > 0.005 )
-                this.game.settings.speed -= 0.005;
+              if( this.game.settings.speed > 0.0002 )
+                this.game.settings.speed -= 0.0001;
               console.log(this.game.settings.speed);
               break;
      }

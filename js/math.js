@@ -56,11 +56,11 @@ SYS.Vector2.prototype = {
   
   normalize: function( )
   {
-    var mag = this.magnitude();
+    var mag = 1 / this.magnitude();
     if ( mag != 0 )
     {
-      this.x = this.x / mag;
-      this.y = this.y / mag;
+      this.x = this.x * mag;
+      this.y = this.y * mag;
     }
   },
   

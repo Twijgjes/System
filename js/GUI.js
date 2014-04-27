@@ -9,6 +9,15 @@ SYS.GUI.prototype =
     {
         this.elements.push(arg);
     },
+    
+    createStyle: function( leftPos, bottomPos, width, height, name )
+    {
+        var style = document.createElement( 'style' );
+        style.type = 'text/css';
+        style.innerHTML = '.'+name+' { bottom: '+bottomPos+'px; left: '+leftPos+'px; width: '+width+'px; height: '+height+'px; }';
+        document.getElementsByTagName('head')[0].appendChild(style);
+        return style;
+    },
 };
 
 SYS.GUI.Info = function()
@@ -17,11 +26,9 @@ SYS.GUI.Info = function()
     this.infoDiv.className = 'infoDiv';
     document.body.appendChild(this.infoDiv);
     this.infoDiv.innerHTML = 'Test';
-    SYS.GUI.elements.push(this);
 };
 
-SYS.GUI.Info.prototype = 
-{
+SYS.GUI.Info.prototype = {
     
     updateInfo: function( speed, objects )
     {
@@ -37,9 +44,7 @@ SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text)
     this.notification.className =  'dialog';
     this.notification.className += ' notification';
     this.notification.innerHTML = text;
-    this.style = this.createStyle( xPos, yPos, width, height, 'notification' );
-    this.blargh = this.test('AAARGHH');
-    console.log(this.blargh);
+    this.style = this.game.GUI.createStyle( xPos, yPos, width, height, 'notification' );
     
     document.body.appendChild(this.notification);
     
@@ -49,6 +54,7 @@ SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text)
     this.notification.appendChild( this.close );
     
     this.close.addEventListener( 'click' , this.clickClose.bind( this ), false );
+    this.close.addEventListener( 'touchend' , this.clickClose.bind( this ), false );
     
     this.game.GUI.addEl(this);
 };
@@ -61,18 +67,34 @@ SYS.GUI.Notification.prototype =
         document.body.removeChild(this.notification);
     },
     
-    createStyle: function( leftPos, bottomPos, width, height, name )
-    {
-        var style = document.createElement( 'style' );
-        style.type = 'text/css';
-        style.innerHTML = '.'+name+' { bottom: '+bottomPos+'px; left: '+leftPos+'px; width: '+width+'px; height: '+height+'px; }';
-        document.getElementsByTagName('head')[0].appendChild(style);
-        return style;
-    },
-    
-    test: function(eek)
-    {
-        console.log(eek);
-        return eek;
-    }
+};
+
+SYS.VectorLine = function( gameObject, origin )
+{
+  this.game = gameObject;
+  this.origin = new SYS.Vector2( origin.x, origin.y );
+  this.destination = new SYS.Vector2( origin.x + 1, origin.y );
+  this.color = ' #858585' ;
+  this.lineWidth = 5;
+};
+
+SYS.VectorLine.prototype = {
+  
+  draw: function( canvas, context )
+  {
+    context.beginPath(  );
+    context.moveTo( this.origin.x, this.origin.y );
+    context.lineTo( this.destination.x, this.destination.y );
+    context.lineWidth = this.lineWidth;
+    context.strokeStyle = this.color;
+    context.lineCap = 'round';
+    context.stroke(  );
+    context.lineWidth = 0;
+  },
+  
+  setDestination: function( newPosX, newPosY )
+  {
+    this.destination.set( new SYS.Vector2( newPosX, newPosY ) );
+  }
+  
 };

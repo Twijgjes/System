@@ -9,7 +9,7 @@ SYS.Game = function(userSettings) {
     HEIGHT: null,
     debug: null,
     bounds: 5000,
-    speed: 0.005
+    speed: 0.0005
   };
   
   this.settings = SYS.Utils.extend(this.settings, userSettings);
@@ -35,6 +35,13 @@ SYS.Game.prototype = {
     this.id = this.idCounter++;
     this.spawnCounter = 0;
     
+    
+    this.GUI = new SYS.GUI( this );
+    this.infoObject = new SYS.GUI.Info();
+    //SYS.Utils.makeRandomObjects();
+    new SYS.StationaryPhysicsBody( this, 80000, 40, new SYS.Vector2( this.settings.WIDTH / 2, this.settings.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
+    new SYS.GUI.Notification( this, 300, 10, 500, 150, 'Hey there! <br> The big yellow blob you see is a star. Throw asteriods into its orbit by clicking, dragging and then releasing the left mouse button!' );
+    
     window.requestAnimFrame = ( function ( callback ) 
     {
       return window.requestAnimationFrame || 
@@ -47,51 +54,46 @@ SYS.Game.prototype = {
              };
     })();
     
-    this.infoObject = new SYS.GUIInfo();
-    this.GUI = new SYS.GUI( this );
-    //SYS.Utils.makeRandomObjects();
-    new SYS.StationaryPhysicsBody( this, 50000, 40, new SYS.Vector2( this.settings.WIDTH / 2, this.settings.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
-    new SYS.GUI.Notification( this, 300, 10, 500, 150, 'Hey there! <br> The big yellow blob you see is a star. Throw asteriods into its orbit by clicking, dragging and then releasing the left mouse button!' );
-    
-    this.update( );
-    
     this.isInitialized = true;
+    this.update( );
   },
   
   update: function() {
-    //console.log( 'updating' );
-    this.settings.context.fillStyle = '#000000';
-    this.settings.context.fillRect( 0, 0, this.settings.WIDTH, this.settings.HEIGHT );    
-    
     // Update step
     for ( var n in this.physicsObjects )
     {
-      this.physicsObjects[n].simulate( this.settings.speed );
+      this.physicsObjects[n].simulate( this.settings.speed * this.deltaTime );
     }
     
-    //SYS.Utils.spawnObjectsOnTimer();
+    //SYS.Utils.spawnObjectsOnTimer( this);
+    this.infoObject.updateInfo( this.settings.speed, this.physicsObjects.length );
     
     // Render step
+    this.settings.context.fillStyle = '#000000';
+    this.settings.context.fillRect( 0, 0, this.settings.WIDTH, this.settings.HEIGHT );
+    
     for ( var n in this.drawables )
     {
       this.drawables[n].draw( this.settings.canvas, this.settings.context );
       if ( this.vectorLine ) this.vectorLine.draw( this.settings.canvas, this.settings.context );
     }
     
-    this.infoObject.updateInfo( this.settings.speed, this.physicsObjects.length );
-    
-    var newTime = Date.now();
-    var ms = newTime - this.currentTime;
-    this.fpsUpdateCounter += ms;
-    this.currentTime =  newTime;
-    this.fps = 1000 / ms;
-    
-    if(this.fpsUpdateCounter > 500) {
-        document.title = 'System FPS: ' + this.fps;
-        this.fpsUpdateCounter = 0;
-    }
+    this.checkFPS();
     
     requestAnimFrame( this.update.bind(this) );
+  },
+  
+  checkFPS: function() {
+    var newTime = Date.now();
+    this.deltaTime = newTime - this.currentTime;
+    this.fpsUpdateCounter += this.deltaTime;
+    this.currentTime =  newTime;
+    this.fps = Math.round(1000 / this.deltaTime);
+    
+    if(this.fpsUpdateCounter > 250) {
+        document.title = 'System v' + SYS.VERSION + ' FPS: ' + this.fps;
+        this.fpsUpdateCounter = 0;
+    }
   }
   
 };
