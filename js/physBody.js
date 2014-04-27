@@ -12,6 +12,7 @@ SYS.PhysicsBody = function(gameObject, mass, density, position, velocity)
   
   if ( this.mass != 0 ) this.game.physicsObjects.push( this );
   if ( this.radius != 0 ) this.game.drawables.push( this );
+  this.game.progress.totalBodies++;
 };
 
 SYS.PhysicsBody.prototype = {

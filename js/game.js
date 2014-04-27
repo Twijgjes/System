@@ -39,8 +39,6 @@ SYS.Game.prototype = {
     this.GUI = new SYS.GUI( this );
     this.infoObject = new SYS.GUI.Info();
     //SYS.Utils.makeRandomObjects();
-    new SYS.StationaryPhysicsBody( this, 80000, 40, new SYS.Vector2( this.settings.WIDTH / 2, this.settings.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
-    new SYS.GUI.Notification( this, 300, 10, 500, 150, 'Hey there! <br> The big yellow blob you see is a star. Throw asteriods into its orbit by clicking, dragging and then releasing the left mouse button!' );
     
     window.requestAnimFrame = ( function ( callback ) 
     {
@@ -55,7 +53,16 @@ SYS.Game.prototype = {
     })();
     
     this.isInitialized = true;
+    
+    this.progress = new SYS.Progression(this);
+    
     this.update( );
+    
+    new SYS.StationaryPhysicsBody( this, 80000, 40, new SYS.Vector2( this.settings.WIDTH / 2, this.settings.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
+    var pos = new SYS.Vector2( (this.settings.WIDTH / 2) + 300, (this.settings.HEIGHT / 2) + 300 );
+    new SYS.PhysicsBody( this, 10000, 40, pos, new SYS.Vector2( 180, -180 ) );
+    new SYS.PhysicsBody( this, 10000, 40, new SYS.Vector2( (this.settings.WIDTH / 2) - 200, (this.settings.HEIGHT / 2) - 200 ), new SYS.Vector2( -200, 200 ) );
+    this.progress.startingBodies = 2;
   },
   
   update: function() {
@@ -79,6 +86,7 @@ SYS.Game.prototype = {
     }
     
     this.checkFPS();
+    this.progress.update();
     
     requestAnimFrame( this.update.bind(this) );
   },

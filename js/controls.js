@@ -3,16 +3,17 @@
 SYS.Controls = function( gameObject )
 {
   this.game = gameObject;
+  this.preventNextEvent = false;
   this.mouseStart = new SYS.Vector2( 0, 0 );
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
-  window.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
-  window.addEventListener( 'touchstart', this.onMouseDown.bind( this ), false );
-  window.addEventListener( 'mouseup', this.onMouseUp.bind( this ), false );
-  window.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
-  window.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
-  window.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
-  window.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
+  document.body.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
+  document.body.addEventListener( 'touchstart', this.onMouseDown.bind( this ), false );
+  document.body.addEventListener( 'mouseup', this.onMouseUp.bind( this ), false );
+  document.body.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
+  document.body.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
+  document.body.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
+  document.body.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
 };
 
 SYS.Controls.prototype = {
@@ -20,6 +21,12 @@ SYS.Controls.prototype = {
   onMouseDown: function( e )
   {
     e.preventDefault();
+    
+    if( this.preventNextEvent == true) {
+      this.preventNextEvent = false;
+      return;
+    }
+    
     var event = e.touches ? e.touches[0] : e;
 
     this.mouseStart.x = event.clientX;
@@ -56,10 +63,7 @@ SYS.Controls.prototype = {
     if (this.mouseDown)
     {
       var event = e.touches ? e.touches[0] : e;
-//      this.mouseDelta.x = event.clientX;
-//      this.mouseDelta.y = event.clientY;
       this.game.vectorLine.setDestination( event.clientX, event.clientY );
-       //console.log("x: ",event.clientX," y: ",event.clientY);
     }
   },
   

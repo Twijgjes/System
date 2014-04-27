@@ -59,18 +59,20 @@ SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text)
     this.game.GUI.addEl(this);
 };
 
-SYS.GUI.Notification.prototype = 
-{
-    clickClose: function(e)
-    {
-        e.preventDefault();
-        document.body.removeChild(this.notification);
-    },
+SYS.GUI.Notification.prototype = {
+  clickClose: function(e) {
+    e.preventDefault();
+    this.game.controls.preventNextEvent = true;
+    document.body.removeChild(this.notification);
+  },
+  
+  destroy: function() {
+    document.body.removeChild(this.notification);
+  }
     
 };
 
-SYS.VectorLine = function( gameObject, origin )
-{
+SYS.VectorLine = function( gameObject, origin ) {
   this.game = gameObject;
   this.origin = new SYS.Vector2( origin.x, origin.y );
   this.destination = new SYS.Vector2( origin.x + 1, origin.y );
@@ -80,8 +82,7 @@ SYS.VectorLine = function( gameObject, origin )
 
 SYS.VectorLine.prototype = {
   
-  draw: function( canvas, context )
-  {
+  draw: function( canvas, context ) {
     context.beginPath(  );
     context.moveTo( this.origin.x, this.origin.y );
     context.lineTo( this.destination.x, this.destination.y );
@@ -92,8 +93,7 @@ SYS.VectorLine.prototype = {
     context.lineWidth = 0;
   },
   
-  setDestination: function( newPosX, newPosY )
-  {
+  setDestination: function( newPosX, newPosY ) {
     this.destination.set( new SYS.Vector2( newPosX, newPosY ) );
   }
   

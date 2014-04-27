@@ -2,6 +2,8 @@ window.onload = function() {
   initializeGame();
 };
 
+var game;
+
 function initializeGame() {
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
@@ -16,5 +18,5 @@ function initializeGame() {
     debug: true
   };
   
-  var game = new SYS.Game(settings);
+  game = new SYS.Game(settings);
 };
