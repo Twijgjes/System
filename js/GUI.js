@@ -62,12 +62,14 @@ SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text)
 SYS.GUI.Notification.prototype = {
   clickClose: function(e) {
     e.preventDefault();
-    this.game.controls.preventNextEvent = true;
-    document.body.removeChild(this.notification);
+    this.destroy();
   },
   
   destroy: function() {
-    document.body.removeChild(this.notification);
+    if(this.notification) {
+      document.body.removeChild(this.notification);
+      this.notification = null;
+    }
   }
     
 };

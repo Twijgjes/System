@@ -7,13 +7,13 @@ SYS.Controls = function( gameObject )
   this.mouseStart = new SYS.Vector2( 0, 0 );
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
-  document.body.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
-  document.body.addEventListener( 'touchstart', this.onMouseDown.bind( this ), false );
-  document.body.addEventListener( 'mouseup', this.onMouseUp.bind( this ), false );
-  document.body.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
-  document.body.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
-  document.body.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
-  document.body.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
+  this.game.settings.canvas.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
+  this.game.settings.canvas.addEventListener( 'touchstart', this.onMouseDown.bind( this ), false );
+  document.addEventListener( 'mouseup', this.onMouseUp.bind( this ), false );
+  document.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
+  document.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
+  document.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
+  this.game.settings.canvas.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
 };
 
 SYS.Controls.prototype = {
