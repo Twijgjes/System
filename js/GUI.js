@@ -30,9 +30,9 @@ SYS.GUI.Info = function()
 
 SYS.GUI.Info.prototype = {
     
-    updateInfo: function( speed, objects )
+    updateInfo: function( speed, objects, calc, collisions )
     {
-        this.infoDiv.innerHTML = 'simulation speed: ' + speed + '<br>' + 'objects: ' + objects;
+        this.infoDiv.innerHTML = 'simulation speed: ' + speed.toFixed(4) + '<br>' + 'objects: ' + objects + '<br> calculations: ' + calc + '<br> collisions: ' + collisions;
     },
     
 };

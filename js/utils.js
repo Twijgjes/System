@@ -29,9 +29,9 @@ SYS.Utils = {
   },
   
   spawnObjectsOnTimer: function( gameObj ) {
-    if ( gameObj.spawnCounter > 120 && gameObj.physicsObjects.length < 100 ) {
+    if ( gameObj.spawnCounter > 120 && gameObj.physicsObjects.length < 300 ) {
       
-      for ( var i = 0; i < 30; i++ ) {
+      for ( var i = 0; i < 20; i++ ) {
         var randomPos = new SYS.Vector2( Math.round( Math.random() * (gameObj.settings.WIDTH * .8) ), Math.round( Math.random() * (gameObj.settings.HEIGHT * .8) ) ),
           randomVel = new SYS.Vector2( ( Math.random() * 800 ) - 400, ( Math.random() * 800 ) - 400 ),
           randomMass = 75 + ( Math.random() * 75 );

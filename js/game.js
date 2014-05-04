@@ -34,6 +34,7 @@ SYS.Game.prototype = {
     this.idCounter = 0;
     this.id = this.idCounter++;
     this.spawnCounter = 0;
+    this.calculations = 0;
     
     
     this.GUI = new SYS.GUI( this );
@@ -72,8 +73,8 @@ SYS.Game.prototype = {
       this.physicsObjects[n].simulate( this.settings.speed * this.deltaTime );
     }
     
-    //SYS.Utils.spawnObjectsOnTimer( this);
-    this.infoObject.updateInfo( this.settings.speed, this.physicsObjects.length );
+    //SYS.Utils.spawnObjectsOnTimer( this );
+    this.infoObject.updateInfo( this.settings.speed, this.physicsObjects.length, this.calculations, this.progress.collisions );
     
     // Render step
     this.settings.context.fillStyle = '#000000';
@@ -86,6 +87,7 @@ SYS.Game.prototype = {
     }
     
     this.checkFPS();
+    this.calculations = 0;
     this.progress.update();
     
     requestAnimFrame( this.update.bind(this) );

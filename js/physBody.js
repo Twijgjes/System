@@ -41,6 +41,7 @@ SYS.PhysicsBody.prototype = {
     
     for ( var n in this.game.physicsObjects )
     {
+      this.game.calculations++;
       // See if this object is within range of another object's "gravity" and prevent interacting with itself
       if ( this.game.physicsObjects[n].position.distanceTo( this.position ) < this.game.physicsObjects[n].mass && this.id != this.game.physicsObjects[n].id )
       {
@@ -70,21 +71,24 @@ SYS.PhysicsBody.prototype = {
   
   collide: function( checkAgainst ) 
   {
-    if( checkAgainst.type == 2 )
-        this.destroy();
+    if( checkAgainst.type == 2 ) {
+      this.game.progress.fizzles++;
+      this.destroy();
+    }
     
     // Check the magnitude of relative velocity
     var va = new SYS.Vector2( this.velocity.x, this.velocity.y ),
         vb = new SYS.Vector2( checkAgainst.velocity.x, checkAgainst.velocity.y );
     vb.sub( va );
     
-    if ( vb.magnitude() > 300 && checkAgainst.type != 2 )
+    /*if ( vb.magnitude() > 300 && checkAgainst.type != 2 )
     {
       console.log(vb.magnitude() );
       this.fragment( checkAgainst );
     }
-    else if ( checkAgainst.type != 2 )
+    else*/ if ( checkAgainst.type != 2 )
     {
+      this.game.progress.collisions++;
       this.fuse( checkAgainst );
     }
   },
@@ -311,6 +315,7 @@ SYS.StationaryPhysicsBody.prototype = {
       if ( this.game.physicsObjects[n].position.distanceTo( this.position ) < this.game.physicsObjects[n].mass && this.id != this.game.physicsObjects[n].id ) {
         if ( this.position.distanceTo( this.game.physicsObjects[n].position ) < this.radius + this.game.physicsObjects[n].radius ) {
           this.game.physicsObjects[n].destroy();
+          this.game.progress.fizzles++;
           return;
         }
 //        this.game.physicsObjects[n].accelerate( this, speed );

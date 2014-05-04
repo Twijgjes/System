@@ -13,7 +13,7 @@ SYS.Controls = function( gameObject )
   document.addEventListener( 'touchend', this.onMouseUp.bind( this ), false );
   document.addEventListener( 'mousemove', this.onMouseMove.bind( this ), false );
   document.addEventListener( 'touchmove', this.onMouseMove.bind( this ), false );
-  this.game.settings.canvas.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
+  document.addEventListener( 'keydown' , this.onKeyDown.bind( this ), false );
 };
 
 SYS.Controls.prototype = {
@@ -38,23 +38,25 @@ SYS.Controls.prototype = {
   
   onMouseUp: function( e )
   {
-    e.preventDefault();
-    console.log('mouse released');
-    var event = e.changedTouches ? e.changedTouches[0] : e;
+    if(this.mouseDown == true) {
+      e.preventDefault();
+      console.log('mouse released');
+      var event = e.changedTouches ? e.changedTouches[0] : e;
 
-    this.mouseDelta.x = event.clientX;
-	this.mouseDelta.y = event.clientY;
-    
-    this.mouseDown = false;
-    
-    var position = new SYS.Vector2( this.mouseStart.x, this.mouseStart.y );
-    var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
-    velocity.sub( position );
-//    velocity.multiplyScalar( 0.7 );
-    velocity.negate();
-    
-    new SYS.PhysicsBody( this.game, 100, 4, position, velocity );
-    this.game.vectorLine = null;
+      this.mouseDelta.x = event.clientX;
+      this.mouseDelta.y = event.clientY;
+      
+      this.mouseDown = false;
+      
+      var position = new SYS.Vector2( this.mouseStart.x, this.mouseStart.y );
+      var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
+      velocity.sub( position );
+    //  velocity.multiplyScalar( 0.7 );
+      velocity.negate();
+      
+      new SYS.PhysicsBody( this.game, 100, 4, position, velocity );
+      this.game.vectorLine = null;
+    }
   },
   
   onMouseMove: function( e )
