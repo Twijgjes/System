@@ -35,6 +35,9 @@ SYS.Game.prototype = {
     this.id = this.idCounter++;
     this.spawnCounter = 0;
     this.calculations = 0;
+    this.camera = new SYS.Camera( this );
+    this.camera.pos.x += this.settings.WIDTH * .5;
+    this.camera.pos.y += this.settings.HEIGHT * .5;
     
     
     this.GUI = new SYS.GUI( this );
@@ -67,6 +70,7 @@ SYS.Game.prototype = {
   },
   
   update: function() {
+    this.controls.processKeys();
     // Update step
     for ( var n in this.physicsObjects )
     {
@@ -79,12 +83,15 @@ SYS.Game.prototype = {
     // Render step
     this.settings.context.fillStyle = '#000000';
     this.settings.context.fillRect( 0, 0, this.settings.WIDTH, this.settings.HEIGHT );
+    this.settings.context.save();
+    this.settings.context.translate( this.settings.WIDTH * .5, this.settings.HEIGHT * .5);
     
     for ( var n in this.drawables )
     {
       this.drawables[n].draw( this.settings.canvas, this.settings.context );
       if ( this.vectorLine ) this.vectorLine.draw( this.settings.canvas, this.settings.context );
     }
+    this.settings.context.restore();
     
     this.checkFPS();
     this.calculations = 0;

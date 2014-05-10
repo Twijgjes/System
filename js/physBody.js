@@ -19,10 +19,15 @@ SYS.PhysicsBody.prototype = {
   
   draw: function( canvas, context )
   {
+    context.save();
+    var x = ( Math.round( this.position.x ) - this.game.camera.pos.x ) * this.game.camera.scale,
+          y = ( Math.round( this.position.y ) - this.game.camera.pos.y ) * this.game.camera.scale;
+    context.translate( x, y );
     context.beginPath();
-    context.arc( Math.round( this.position.x ), Math.round( this.position.y ), this.radius, 0, 2 * Math.PI, false );
+    context.arc( 0, 0, this.radius * this.game.camera.scale, 0, 2 * Math.PI, false );
     context.fillStyle = this.color;
     context.fill();
+    context.restore();
   },
   
   simulate: function( speed )
@@ -284,14 +289,20 @@ SYS.StationaryPhysicsBody.prototype = {
   
   draw: function( canvas, context )
   {
+    context.save();
+    
+    var scale = this.game.camera.scale,
+          x = ( Math.round( this.position.x ) - this.game.camera.pos.x ) * scale,
+          y = ( Math.round( this.position.y ) - this.game.camera.pos.y ) * scale;
+    context.translate( x, y );
+    
     var glowRadius = this.radius * 20;
-    var roundedX = Math.round( this.position.x );
-    var roundedY = Math.round( this.position.y );
+    
     context.beginPath();
-    context.arc( roundedX, roundedY, glowRadius, 0, this.circleRadians, false );
+    context.arc( 0, 0, glowRadius * scale, 0, this.circleRadians, false );
     
     // create radial gradient
-    var grd = context.createRadialGradient(roundedX, roundedY, 1, roundedX, roundedY, glowRadius);
+    var grd = context.createRadialGradient(0, 0, 1, 0, 0, glowRadius * scale);
     // light blue
     grd.addColorStop(0, this.color );
     grd.addColorStop(0.05, '#DBB748' );
@@ -303,9 +314,11 @@ SYS.StationaryPhysicsBody.prototype = {
     context.fill();
     
     context.beginPath();
-    context.arc( roundedX, roundedY, this.radius, 0, this.circleRadians, false );
+    context.arc( 0, 0, this.radius * scale, 0, this.circleRadians, false );
     context.fillStyle = this.color;
     context.fill();
+    
+    context.restore();
   },
   
   simulate: function( speed )
