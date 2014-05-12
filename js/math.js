@@ -22,6 +22,10 @@ SYS.Math = {
 
 SYS.Vector2 = function( x, y )
 {
+  if(!x || !y){
+    this.x = 0;
+    this.y = 0;
+  }
   this.x = x;
   this.y = y;
 };
@@ -30,20 +34,17 @@ SYS.Vector2.prototype = {
   
   constructor: SYS.Vector2,
   
-  add: function( v )
-  {
+  add: function( v ) {
     this.x += v.x;
     this.y += v.y;
   },
   
-  sub: function( v )
-  {
+  sub: function( v ) {
     this.x -= v.x;
     this.y -= v.y;
   },
   
-  multiplyScalar: function( s )
-  {
+  multiplyScalar: function( s ) {
     this.x *= s;
     this.y *= s;
   },
@@ -54,8 +55,7 @@ SYS.Vector2.prototype = {
     console.log( 'HEY! You still have to write this function.' );
   },
   
-  normalize: function( )
-  {
+  normalize: function( ) {
     var mag = 1 / this.magnitude();
     if ( mag != 0 )
     {
@@ -64,13 +64,11 @@ SYS.Vector2.prototype = {
     }
   },
   
-  magnitude: function( )
-  {
+  magnitude: function( ) {
     return Math.sqrt( ( this.x * this.x ) + ( this.y * this.y ) );
   },
   
-  distanceTo: function( v )
-  {
+  distanceTo: function( v ) {
     var va = new SYS.Vector2( v.x, v.y ),
         vb = new SYS.Vector2( this.x, this.y );
     
@@ -78,28 +76,31 @@ SYS.Vector2.prototype = {
     return va.magnitude();
   },
   
-  negate: function( )
-  {
+  negate: function( ) {
     this.x *= -1;
     this.y *= -1;
+    return this;
   },
   
-  angleTo: function( v )
-  {
+  angleTo: function( v ) {
     var normal = SYS.getNormalBetweenVectors( v, this );
     return Math.atan2( normal.y, normal.x );
   },
   
-  placeAround: function( rotation, vector, radius )
-  {
+  placeAround: function( rotation, vector, radius ) {
     this.x = vector.x + Math.cos(rotation) * radius;
 	this.y = vector.y + Math.sin(rotation) * radius;
   },
   
-  set: function ( vector )
-  {
+  set: function ( vector ) {
     this.x = vector.x;
     this.y = vector.y;
+    return this;
+  },
+  
+  clone: function ( v ) {
+    this.set( v );
+    return this;
   }
   
 };

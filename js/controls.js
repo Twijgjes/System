@@ -52,13 +52,11 @@ SYS.Controls.prototype = {
       
       this.mouseDown = false;
       
-      var position = new SYS.Vector2( this.mouseStart.x + this.game.camera.pos.x, this.mouseStart.y + this.game.camera.pos.y );
+      var position = new SYS.Vector2( this.mouseStart.x, this.mouseStart.y );
       var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
       velocity.sub( this.mouseStart );
-    //  velocity.multiplyScalar( 0.7 );
-      velocity.negate();
       
-      new SYS.PhysicsBody( this.game, 100, 4, position, velocity );
+      this.game.spawner.asteroids(position, velocity, 50);
       this.game.vectorLine = null;
     }
   },
@@ -74,7 +72,6 @@ SYS.Controls.prototype = {
   },
   
   onScroll: function( event ) {
-    console.log('scroll event: ',event);
     if(event.wheelDelta > 0)
       this.game.camera.scale += 0.1;
     if(event.wheelDelta < 0 && this.game.camera.scale > 0.11)

@@ -3,8 +3,7 @@ SYS.GUI = function( gameObject ) {
   this.elements = [];
 };
 
-SYS.GUI.prototype =
-{
+SYS.GUI.prototype = {
     addEl: function(arg)
     {
         this.elements.push(arg);
@@ -20,43 +19,40 @@ SYS.GUI.prototype =
     },
 };
 
-SYS.GUI.Info = function()
-{
-    this.infoDiv = document.createElement('div');
-    this.infoDiv.className = 'infoDiv';
-    document.body.appendChild(this.infoDiv);
-    this.infoDiv.innerHTML = 'Test';
+SYS.GUI.Info = function() {
+  this.infoDiv = document.createElement('div');
+  this.infoDiv.className = 'infoDiv';
+  document.body.appendChild(this.infoDiv);
+  this.infoDiv.innerHTML = 'Test';
 };
 
 SYS.GUI.Info.prototype = {
-    
-    updateInfo: function( speed, objects, calc, collisions )
-    {
-        this.infoDiv.innerHTML = 'simulation speed: ' + speed.toFixed(4) + '<br>' + 'objects: ' + objects + '<br> calculations: ' + calc + '<br> collisions: ' + collisions;
-    },
-    
+  
+  updateInfo: function( speed, objects, calc, collisions )
+  {
+    this.infoDiv.innerHTML = 'simulation speed: ' + speed.toFixed(4) + '<br>' + 'objects: ' + objects + '<br> calculations: ' + calc + '<br> collisions: ' + collisions;
+  },
+  
 };
 
-SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text)
-{
-    this.game = gameObject;
-    this.notification = document.createElement( 'div' );
-    this.notification.className =  'dialog';
-    this.notification.className += ' notification';
-    this.notification.innerHTML = text;
-    this.style = this.game.GUI.createStyle( xPos, yPos, width, height, 'notification' );
-    
-    document.body.appendChild(this.notification);
-    
-    this.close = document.createElement( 'div' );
-    this.close.className = 'button';
-    this.close.innerHTML = 'close';
-    this.notification.appendChild( this.close );
-    
-    this.close.addEventListener( 'click' , this.clickClose.bind( this ), false );
-    this.close.addEventListener( 'touchend' , this.clickClose.bind( this ), false );
-    
-    this.game.GUI.addEl(this);
+SYS.GUI.Notification = function( gameObject, xPos, yPos, width, height, text) {
+  this.game = gameObject;
+  this.notification = document.createElement( 'div' );
+  this.notification.className =  'dialog notification';
+  this.notification.innerHTML = text;
+  this.style = this.game.GUI.createStyle( xPos, yPos, width, height, 'notification' );
+  
+  document.body.appendChild(this.notification);
+  
+  this.close = document.createElement( 'div' );
+  this.close.className = 'close';
+  this.close.innerHTML = 'close';
+  this.notification.appendChild( this.close );
+  
+  this.close.addEventListener( 'click' , this.clickClose.bind( this ), false );
+  this.close.addEventListener( 'touchend' , this.clickClose.bind( this ), false );
+  
+  this.game.GUI.addEl(this);
 };
 
 SYS.GUI.Notification.prototype = {

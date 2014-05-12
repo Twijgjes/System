@@ -24,8 +24,7 @@ SYS.Game.prototype = {
   initialize: function() {
     this.drawables = [ ];
     this.physicsObjects = [ ];
-//    this.Math = new SYS.Math();
-    this.delta; // TODO
+    this.delta;
     this.controls = new SYS.Controls( this );
     this.vectorLine;
     this.fps = 0;
@@ -33,16 +32,12 @@ SYS.Game.prototype = {
     this.currentTime = Date.now();
     this.idCounter = 0;
     this.id = this.idCounter++;
-    this.spawnCounter = 0;
     this.calculations = 0;
     this.camera = new SYS.Camera( this );
-    this.camera.pos.x += this.settings.WIDTH * .5;
-    this.camera.pos.y += this.settings.HEIGHT * .5;
-    
     
     this.GUI = new SYS.GUI( this );
     this.infoObject = new SYS.GUI.Info();
-    //SYS.Utils.makeRandomObjects();
+    this.spawner = new SYS.Spawner( this );
     
     window.requestAnimFrame = ( function ( callback ) 
     {
@@ -62,22 +57,24 @@ SYS.Game.prototype = {
     
     this.update( );
     
-    new SYS.StationaryPhysicsBody( this, 80000, 40, new SYS.Vector2( this.settings.WIDTH / 2, this.settings.HEIGHT / 2 ), new SYS.Vector2( 0, 0 ) );
-    var pos = new SYS.Vector2( (this.settings.WIDTH / 2) + 300, (this.settings.HEIGHT / 2) + 300 );
-    new SYS.PhysicsBody( this, 10000, 40, pos, new SYS.Vector2( 180, -180 ) );
-    new SYS.PhysicsBody( this, 10000, 40, new SYS.Vector2( (this.settings.WIDTH / 2) - 200, (this.settings.HEIGHT / 2) - 200 ), new SYS.Vector2( -200, 200 ) );
+    
+    new SYS.StationaryPhysicsBody( this, 800000, 40, new SYS.Vector2( 0, 0 ), new SYS.Vector2( 0, 0 ) );
+    var pos = new SYS.Vector2( 400, 400 );
+    new SYS.PhysicsBody( this, 10000, 40, pos, new SYS.Vector2( 460, -460 ) );
+    new SYS.PhysicsBody( this, 10000, 40, pos.negate(), new SYS.Vector2( -500, 500 ) );
     this.progress.startingBodies = 2;
   },
   
   update: function() {
-    this.controls.processKeys();
     // Update step
+    this.controls.processKeys();
+    this.spawner.update();
+    
     for ( var n in this.physicsObjects )
     {
       this.physicsObjects[n].simulate( this.settings.speed * this.deltaTime );
     }
     
-    //SYS.Utils.spawnObjectsOnTimer( this );
     this.infoObject.updateInfo( this.settings.speed, this.physicsObjects.length, this.calculations, this.progress.collisions );
     
     // Render step

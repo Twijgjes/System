@@ -4,8 +4,8 @@ SYS.PhysicsBody = function(gameObject, mass, density, position, velocity)
   this.mass = mass;
   this.density = mass / 25;
   this.radius = Math.pow( ( 3*mass )/(4 * Math.PI ), 1/3 ); //( mass / density ) / ( Math.PI * 4 );
-  this.position = position;
-  this.velocity = velocity;
+  this.position = new SYS.Vector2(position.x, position.y);
+  this.velocity = new SYS.Vector2(velocity.x, velocity.y);
   this.color = '#603311';
   this.id = this.game.idCounter++;
   this.type = 1; // 1 for asteroid
@@ -305,10 +305,10 @@ SYS.StationaryPhysicsBody.prototype = {
     var grd = context.createRadialGradient(0, 0, 1, 0, 0, glowRadius * scale);
     // light blue
     grd.addColorStop(0, this.color );
-    grd.addColorStop(0.05, '#DBB748' );
-    grd.addColorStop(0.08, '#4D401C' );
+    grd.addColorStop(0.05, 'rgba(255,212,82,.8)' );
+    grd.addColorStop(0.08, 'rgba(255,212,82,.3)' );
     // dark blue
-    grd.addColorStop(1, '#000000');
+    grd.addColorStop(1, 'rgba(255,212,82,0)');
 
     context.fillStyle = grd;
     context.fill();
