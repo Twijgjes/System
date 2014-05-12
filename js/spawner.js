@@ -2,6 +2,8 @@ SYS.Spawner = function( gameObject ) {
   this.game = gameObject;
   this.spawnOnTimer = false;
   this.spawnCounter = 0;
+  this.mode = this.asteroids;
+  this.amount = 50;
 };
 
 SYS.Spawner.prototype = {
@@ -10,8 +12,8 @@ SYS.Spawner.prototype = {
     if(this.spawnOnTimer) this.spawnObjectsOnTimer();
   },
   
-  spawn: function(type, args) {
-    
+  spawn: function(position, velocity) {
+    this.mode(position, velocity);
   },
   
   makeRandomObjects: function( ) {
@@ -43,15 +45,15 @@ SYS.Spawner.prototype = {
     this.spawnCounter++;
   },
   
-  asteroids: function( pos, vel, amount ) {
+  asteroids: function( pos, vel ) {
     pos.x += this.game.camera.pos.x; 
     pos.y += this.game.camera.pos.y;
     pos.multiplyScalar( 1 / this.game.camera.scale );
     vel.multiplyScalar( 2 );
     vel.negate();
-    for( var i = 0; i < amount; i++ ) {
+    for( var i = 0; i < this.amount; i++ ) {
       rPos = new SYS.Vector2().clone(pos);
-      rPos.add( SYS.Utils.randVec(amount * 4) );
+      rPos.add( SYS.Utils.randVec( this.amount * 4) );
       new SYS.PhysicsBody( this.game, 100, 4, rPos, vel );
     }
   },

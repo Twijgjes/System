@@ -7,6 +7,7 @@ SYS.Controls = function( gameObject )
   this.mouseStart = new SYS.Vector2( 0, 0 );
   this.mouseDelta = new SYS.Vector2( 0, 0 );
   this.mouseDown = false;
+  this.spawnerType = 'asteroid';
   this.keys = [];
   this.ofst = new SYS.Vector2(this.game.settings.WIDTH * .5, this.game.settings.HEIGHT * .5);
   this.game.settings.canvas.addEventListener( 'mousedown', this.onMouseDown.bind( this ), false );
@@ -56,7 +57,7 @@ SYS.Controls.prototype = {
       var velocity = new SYS.Vector2( this.mouseDelta.x, this.mouseDelta.y );
       velocity.sub( this.mouseStart );
       
-      this.game.spawner.asteroids(position, velocity, 50);
+      this.game.spawner.spawn(position, velocity);
       this.game.vectorLine = null;
     }
   },

@@ -1,6 +1,7 @@
 SYS.GUI = function( gameObject ) {
   this.game = gameObject;
   this.elements = [];
+  this.spawnerButtons = new SYS.GUI.SpawnerButtons( this.game, new SYS.Vector2(), 20, 20 );
 };
 
 SYS.GUI.prototype = {
@@ -70,11 +71,39 @@ SYS.GUI.Notification.prototype = {
     
 };
 
+SYS.GUI.SpawnerButtons = function( gameObject, pos, width, height ) {
+  this.game = gameObject;
+  this.buttonCnt = document.getElementsByClassName('buttons')[0];
+  console.log(this.buttonCnt);
+  var buttons = this.buttonCnt.children;
+  for ( var i = 0; i < this.buttonCnt.children.length; i++ ){
+    this.buttonCnt.children[i].addEventListener( 'click', this.click.bind( this ) , false);
+  };
+//  this.asteroidBtn = document.getElementByClassName('asteroid')[0];
+//  this.shotgunBtn = document.getElementByClassName('shotgun')[0];
+};
+
+SYS.GUI.SpawnerButtons.prototype = {
+  addButton: function( button, callback ) {
+    var name = button
+  },
+  
+  click: function(e) {
+    console.log(e.target.innerHTML);
+    var mode = e.target.innerHTML;
+    if( mode == 'asteroid') {
+      this.game.spawner.mode = this.game.spawner.asteroid;
+    } else if( mode = 'shotgun') {
+      this.game.spawner.mode = this.game.spawner.asteroids;
+    }
+  }
+};
+
 SYS.VectorLine = function( gameObject, origin ) {
   this.game = gameObject;
   this.origin = new SYS.Vector2( origin.x, origin.y );
   this.destination = new SYS.Vector2( origin.x + 1, origin.y );
-  this.color = ' #858585' ;
+  this.color = 'rgba(127,127,127,.1)' ;
   this.lineWidth = 5;
 };
 
