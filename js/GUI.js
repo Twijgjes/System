@@ -2,6 +2,7 @@ SYS.GUI = function( gameObject ) {
   this.game = gameObject;
   this.elements = [];
   this.spawnerButtons = new SYS.GUI.SpawnerButtons( this.game, new SYS.Vector2(), 20, 20 );
+  this.res = new SYS.GUI.Resources( this.game, 1000, 10000 );
 };
 
 SYS.GUI.prototype = {
@@ -79,8 +80,6 @@ SYS.GUI.SpawnerButtons = function( gameObject, pos, width, height ) {
   for ( var i = 0; i < this.buttonCnt.children.length; i++ ){
     this.buttonCnt.children[i].addEventListener( 'click', this.click.bind( this ) , false);
   };
-//  this.asteroidBtn = document.getElementByClassName('asteroid')[0];
-//  this.shotgunBtn = document.getElementByClassName('shotgun')[0];
 };
 
 SYS.GUI.SpawnerButtons.prototype = {
@@ -124,4 +123,34 @@ SYS.VectorLine.prototype = {
     this.destination.set( new SYS.Vector2( newPosX, newPosY ) );
   }
   
+};
+
+SYS.GUI.Resources = function( gameObject, initialMass, initialEnergy ) {
+  this.game = gameObject;
+  this.resources = {
+    mass    : initialMass,
+    energy  : initialEnergy,
+    massEl  : document.getElementById('mass'),
+    energyEl: document.getElementById('energy')
+  };
+  this.resources.massEl.innerHTML = 'mass: ' + this.resources.mass;
+  this.resources.energyEl.innerHTML = 'energy: ' + this.resources.energy;
+
+};
+
+SYS.GUI.Resources.prototype = {
+  update: function( type, amount ) {
+    // TODO: prevent non-existent resources from being used.
+    console.log('adding',Math.round(amount),'to',type);
+    this.resources[type] += amount;
+    this.resources[type] = Math.round(this.resources[type]);
+    var element = type+'El';
+    this.resources[element].innerHTML = type + ': ' + this.resources[type];
+  },
+
+  set: function( type, amount ) {
+    this.resources[type] = amount;
+    var element = type+'El';
+    this.resources[element].innerHTML = type + ': ' + this.resources[type];
+  },
 };

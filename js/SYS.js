@@ -1,5 +1,5 @@
 var SYS = SYS || {
   
   // Info over System
-  VERSION: '0.2.3',
+  VERSION: '0.2.4'
 };

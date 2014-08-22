@@ -41,7 +41,8 @@ SYS.PhysicsBody.prototype = {
     // Check if the object is not out of bounds.
     if ( this.position.magnitude() > this.game.settings.bounds )
     {
-      this.destroy;
+      this.destroy();
+      return;
     }
     
     for ( var n in this.game.physicsObjects )
@@ -78,7 +79,10 @@ SYS.PhysicsBody.prototype = {
   {
     if( checkAgainst.type == 2 ) {
       this.game.progress.fizzles++;
+      this.game.GUI.res.update( 'mass', this.mass * -1 );
+      this.game.GUI.res.update( 'energy', Math.abs( this.velocity.magnitude() ) * -1 );
       this.destroy();
+      return;
     }
     
     // Check the magnitude of relative velocity
@@ -94,6 +98,8 @@ SYS.PhysicsBody.prototype = {
     else*/ if ( checkAgainst.type != 2 )
     {
       this.game.progress.collisions++;
+      var mass = this.mass < checkAgainst.mass? this.mass : checkAgainst.mass;
+      this.game.GUI.res.update( 'mass', mass );
       this.fuse( checkAgainst );
     }
   },
@@ -327,6 +333,8 @@ SYS.StationaryPhysicsBody.prototype = {
       // WHOA, prevent simulating against self!
       if ( this.game.physicsObjects[n].position.distanceTo( this.position ) < this.game.physicsObjects[n].mass && this.id != this.game.physicsObjects[n].id ) {
         if ( this.position.distanceTo( this.game.physicsObjects[n].position ) < this.radius + this.game.physicsObjects[n].radius ) {
+          this.game.GUI.res.update( 'mass', this.game.physicsObjects[n].mass * -1 );
+          this.game.GUI.res.update( 'energy', Math.abs( this.game.physicsObjects[n].velocity.magnitude() ) * -1 );
           this.game.physicsObjects[n].destroy();
           this.game.progress.fizzles++;
           return;

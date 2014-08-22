@@ -64,8 +64,12 @@ SYS.Spawner.prototype = {
     pos.multiplyScalar( 1 / this.game.camera.scale );
     vel.multiplyScalar( 2 );
     vel.negate();
-    
-    new SYS.PhysicsBody( this.game, 100, 4, pos, vel );
+    var energy = Math.abs(vel.magnitude());
+    if( energy <= this.game.GUI.res.resources.energy && 100 <= this.game.GUI.res.resources.mass ) {
+      this.game.GUI.res.update('energy', -Math.round(energy));
+      this.game.GUI.res.update('mass', -100);
+      new SYS.PhysicsBody( this.game, 100, 4, pos, vel );
+    }
   }
 };
 

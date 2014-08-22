@@ -24,7 +24,7 @@ SYS.Game.prototype = {
   initialize: function() {
     this.drawables = [ ];
     this.physicsObjects = [ ];
-    this.delta;
+    this.energyUpdate = Date.now();
     this.controls = new SYS.Controls( this );
     this.vectorLine;
     this.fps = 0;
@@ -91,6 +91,7 @@ SYS.Game.prototype = {
     this.settings.context.restore();
     
     this.checkFPS();
+    this.checkEnergy();
     this.calculations = 0;
     this.progress.update();
     
@@ -105,8 +106,21 @@ SYS.Game.prototype = {
     this.fps = Math.round(1000 / this.deltaTime);
     
     if(this.fpsUpdateCounter > 250) {
-        document.title = 'System v' + SYS.VERSION + ' FPS: ' + this.fps;
-        this.fpsUpdateCounter = 0;
+      document.title = 'System v' + SYS.VERSION + ' FPS: ' + this.fps;
+      this.fpsUpdateCounter = 0;
+    }
+  },
+
+  checkEnergy: function() {
+    var newTime = Date.now();
+    var delta = Date.now() - this.energyUpdate;
+    if ( delta >= 2000 ) {
+      this.energyUpdate = newTime;
+      var newEnergy = 0;
+      this.physicsObjects.map( function(obj) {
+        newEnergy += Math.abs(obj.velocity.magnitude());
+      } );
+      this.GUI.res.update('energy', newEnergy *.01);
     }
   }
   
